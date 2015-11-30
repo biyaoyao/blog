@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        <%= title %>
+    </title>
+     <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/mycss.css' />
+</head>
+
+<body>
+
+    <%- include header.ejs %>
+
+
+        <div class="content main-content" >
+            <div id="main">
+                <div id="albumshow">
+
+                    <div id="albumtop">
+                        <div class="left"><a href="albumList.htm"><b>图片列表</b></a></div>
+                        <div class="right">
+                            <% if (session.toString()!='null'){ %>
+                                <a href="imgUpload"><img src="images/ico_uploadpic.gif" align="absmiddle">上传新照片 </a>
+                                <a href="javascript:opAlbum(-1,'','',false);"><img src="images/ico_creatset.gif" align="absmiddle">创建新相册 </a>
+                                <%}%>
+                        </div>
+                        <br>
+                    </div>
+                    <div id="albumcenter">
+                      
+                            <ul>
+
+
+                                <% for(var i=0;imgList!=undefined&&i<imgList.length;i++){
+                                var img=imgList[i];
+    
+                                 %>
+
+                                    <li class="li<%=img.img_id%>">
+                                        <a  class="pt"><img src="<%=img.img_url%>"></a><a href="#" id="name<%=img.img_id%>" class="aname"><%=img.img_desc%></a>
+                                       <br><a href="javascript:opImg(<%=img.img_id%>,'<%=img.img_url%>','<%=img.img_desc%>');" class="aop">√编辑</a><a href="javascript:delImg(<%=img.img_id%>)" class="aop">×删除</a></li>
+
+
+                                    <%}%>
+
+
+
+
+
+
+
+                            </ul>
+                    </div>
+                </div>
+                <br>
+            </div>
+
+        </div>
+
+        <%- include foot.ejs %>
+     <script src="js/albumList.js"></script>
+</body>
+
+</html>

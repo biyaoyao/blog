@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/mycss.css' />
+    
+
+</head>
+
+<body>
+
+    <%- include header.ejs %>
+
+
+        <div class="content main-content">
+            <div id="main">
+                <div class="left_side">
+                    <% if (session.toString()!='null'){ %>
+                        <a style="float: right;
+width: 100%;
+text-align: right;
+min-height: 50px;" href="/newArticle"><img src="images/postnew.gif" alt="" align="top">写新文章</a>
+                        <%}%>
+
+                            <%if(typeList.length==0){%>
+
+                                <h2>当前没有发表任何文章</h2>
+
+                                <%}%>
+                                    <%for(var i=0;i<typeList.length;i++){
+    var type=typeList[i];
+    
+    %>
+
+                                        <h2>
+                          
+							<a href="blog?type_id=<%=type.type_id%>"><%=type.type_name%></a>
+							<span class="newArticle">
+                                
+								<a href="javascript:slide('blog<%=i%>','slide<%=i%>')" class="slide<%=i%>">[&nbsp;收&nbsp;起&nbsp;]</a>
+							</span>
+						</h2>
+
+
+                                        <h3>
+							<%=type.type_desc%>
+						</h3>
+                                        <%for(var j=0;j<type.articleList.length;j++){
+                             var article=type.articleList[j];
+    %>
+                                            <div class="blog<%=i%>">
+                                                <div class="title">
+                                                    <a href="/articleDetail?article_id=<%=article.article_id%>">
+                                                        <%=article.title%>
+                                                    </a>
+                                                </div>
+                                                <div class="article" style="max-height: 97px;overflow: hidden;">
+                                                    <%-article.content%>
+                                                </div>
+                                                <p class="date">
+                                                    发表:
+                                                    <%=article.author%>
+
+                                                        <img src="/images/more.gif" alt="">
+                                                        <a href="/articleDetail?article_id=<%=article.article_id%>">更多</a>
+                                                        <img src="/images/scan.gif" alt="">
+                                                        <a href="/articleDetail?article_id=<%=article.article_id%>#comment">评论(<%=article.comment_count%>)</a>
+                                                        <img src="/images/comment.gif" alt="">
+                                                        <a href="/articleDetail?article_id=<%=article.article_id%>">浏览(<%=article.scan_count%>)</a>
+                                                        <img src="/images/timeicon.gif" alt="">
+                                                        <%=article.create_time.substring(0,10)%>
+                                                </p>
+                                            </div>
+
+                                            <%}%>
+                                                <%}%>
+
+                </div>
+                <div class="right_side">
+
+                    <div class="nav">
+
+
+                        <h2>
+							关于我
+						</h2>
+                        <div class="padding">
+                            <div class="img2">
+                                <img style="width: 80px;
+height: 92px;" src="<%=userinfo.photo%>" alt="">
+                            </div>
+
+                            <p>
+                                <%=userinfo.real_name%>
+                            </p>
+                            <p>
+                                <%=userinfo.sex%>,
+                                    <%=userinfo.birthday%>
+                            </p>
+                            <p>
+                                家乡
+                                <%=userinfo.birth_place%>
+                            </p>
+                            <p>
+                                现居
+                                <%=userinfo.live_place%>
+                            </p>
+                            <p>
+                                <%=userinfo.introduce%>
+                            </p>
+                            <div class="myms" style="text-align:right">
+                                <a href="/msgBoard#leavemsg"><img src="/images/my_leave.gif" alt="认识我的朋友或同学要给我留言哦" align="absmiddle">&nbsp;给我留言</a>
+                                <a href="/msgBoard#more"><img src="/images/my_msg.gif" alt="查看给我的留言" align="absmiddle">查看留言</a>
+                            </div>
+                        </div>
+
+
+                        <h2>
+							本站推荐
+						</h2>
+                        <ul>
+                            <li>
+                                <a href="https://github.com">github</a>
+                            </li>
+                            <li>
+                                <a href="http://www.oschina.net/">开源中国</a>
+                            </li>
+                            <li>
+                                <a href="http://www.runoob.com/">w3cschool</a>
+                            </li>
+                            <li>
+                                <a href="http://www.javaeye.com">JavaEye</a>
+                            </li>
+                            <!--
+                              <li>
+								<a href="http://hi.baidu.com/wubin7019088">我的百度空间</a>
+							</li>
+                               -->
+                        </ul>
+                        <br>
+                        <h2>
+							友情链接
+						</h2>
+                        <ul>
+                            <li>
+                                <a href="http://www.solucija.com">solucija.com</a>
+                            </li>
+                            <li>
+                                <a href="#">free-css-templates.com</a>
+                            </li>
+                            <li>
+                                <a href="http://snews.vietbee.net/">snews.vietbee.net</a>
+                            </li>
+                            <li>
+                                <a href="http://p-ahlqvist.com/">p-ahlqvist.com</a>
+                            </li>
+                            <li>
+                                <a href="http://www.brauck.nl/">www.brauck.nl</a>
+                            </li>
+                            <li>
+                                <a href="http://www.design4.ltd.pl/">www.design4.ltd.pl</a>
+                            </li>
+                        </ul>
+                        <div style="text-align:right;padding:5px 0 10px 0;">
+                            <a href="#"><img src="/images/my_link.gif" alt="申请友情链接" align="absbottom">申请友情链接</a>
+                        </div>
+                        <div class="access">小站访问量&nbsp;<span><%=visit_count%></span></div>
+                    </div>
+                </div>
+                <br>
+            </div>
+        </div>
+
+
+        <%- include foot.ejs %>
+    
+    
+</body>
+
+</html>

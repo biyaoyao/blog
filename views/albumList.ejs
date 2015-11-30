@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        <%= title %>
+    </title>
+     <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/mycss.css' />
+</head>
+
+<body>
+
+    <%- include header.ejs %>
+
+
+        <div class="content main-content" >
+            <div id="main">
+                <div id="albumshow">
+
+                    <div id="albumtop">
+                        <div class="left"><a href="albumList.htm"><b>相册列表</b></a></div>
+                        <div class="right">
+                            <% if (session.toString()!='null'){ %>
+                                <a href="imgUpload"><img src="images/ico_uploadpic.gif" align="absmiddle">上传新照片 </a>
+                                <a href="javascript:opAlbum(-1,'','',false);"><img src="images/ico_creatset.gif" align="absmiddle">创建新相册 </a>
+                                <%}%>
+                        </div>
+                        <br>
+                    </div>
+                    <div id="albumcenter">
+                      
+                            <ul>
+
+
+                                <% for(var i=0;albumLis!=undefined&&i<albumLis.length;i++){
+                                var album=albumLis[i];
+    
+                                 %>
+
+                                    <li class="li<%=album.image_type_id%>">
+                                        <a href="/albumDetail?image_type_id=<%=album.image_type_id%>" class="pt"><img src="<%=album.cover%>"></a><a href="#" id="name<%=album.image_type_id%>" class="aname"><%=album.type_name%>(<%=album.img_count%>)</a>
+                                       <br>
+                                        <% if (session.toString()!='null'){ %>
+                                        <a href="javascript:opAlbum(<%=album.image_type_id%>,'<%=album.type_name%>','<%=album.type_desc%>',true);" class="aop">√编辑</a><a href="javascript:delAlbum(<%=album.image_type_id%>)" class="aop">×删除</a>
+                                       <%}else{%>
+                                        &nbsp;
+                                             <%}%>
+                                </li>
+
+
+                                    <%}%>
+
+
+
+
+
+
+
+                            </ul>
+                    </div>
+                </div>
+                <br>
+            </div>
+
+        </div>
+
+        <%- include foot.ejs %>
+     <script src="js/albumList.js"></script>
+</body>
+
+</html>

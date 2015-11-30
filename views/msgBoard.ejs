@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+         <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/mycss.css' />
+       <style>
+        textarea {
+            width: 60%;
+            height: 80px;
+            padding: 1em;
+            resize: none;
+            overflow-x: none;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+    </style>
+  </head>
+  <body>
+      
+    <%- include header.ejs %>
+      
+      
+     <div class="content main-content">
+		<div id="main">
+		                                   
+			<div id="msgshow">
+				<a name="leavemsg"></a>
+				<div class="top"><span class="title">留言板</span>　[   认识或不认识我的朋友,留下你的脚印吧...  ]</div>
+				<div id="publish_comment">
+	   				
+		   				<input type="hidden" id="HideId" name="id" value="">
+		   				<input type="hidden" id="HideUser" value="biyaoyao">
+		    			<div class="user">姓　名:  <input type="text" name="user" id="user" size="30" ></div>
+	   					
+	   					<div class="userNum">
+	   						内　容:  [  留言长度不能超过<span>500</span>个字符  ]<br>
+	   					</div>
+	   					<div class="word">
+	   						<textarea maxlength="500" id="content"></textarea>
+	   					</div>
+	   					<!--<div class="varcodeinput">
+	   						验证码:  <input type="text" id="code" name="code" onfocus="showCode();" onclick="showCode();" size="4" maxlength="4">
+	   						　[  点击输入框获取验证码,不区分大小写  ]
+	   					</div>
+	   					<div class="varcode" style="display:none">
+							<img src="/randCode" id="randimg">
+							<a href="javascript:refresh()" title="看不清左边的字符?点下换个!">看不清?换一个</a>
+						</div>-->
+	   					<div class="error"></div>
+	   					<div class="sub"><span id="sub"><input type="button" value="给我留言" onclick="leaveMsg();"></span>　注:请珍惜我的成果,文明留言</div>
+   				
+  				</div>
+  				<a name="more"></a>
+  				<div class="bottom"><span class="title">网友留言</span>　[   留下联系方式，我将定期回复你的留言  ]</div>
+  				<div class="net_msg">
+					
+					
+					        <%for(var i=0;i<leavList.length;i++){
+                       
+    %>
+                                    <div class="info">
+                                        <div class="num">
+                                            <%=i+1%>
+                                        </div>
+                                        <div class="user">
+                                            <%=leavList[i].user%>
+                                        </div>
+                                        <div class="dc_time">
+                                            <%=leavList[i].create_time%>
+                                        </div>
+                                        <div class="op"></div>
+                                        <br>
+                                    </div>
+                                    <div id="msg <%=i+1%>" class="com_cont">
+                                        <%=leavList[i].content%>
+                                    </div>
+
+                                    <%}%>
+						
+							
+						
+			
+				</div>
+			</div>
+		</div>
+	</div>
+      
+
+         <%- include foot.ejs %>
+      
+      
+
+            <script type="text/javascript">
+                function leaveMsg() {
+
+
+                    var user = $("#user").val();
+                    var content = $("#content").val();
+                    $.getJSON("leaveMsg.action", {
+                            user: user,
+                            content: content
+                        },
+                        function (data) {
+                            if (data.result) {
+                                alert("留言成功！");
+                                location.reload();
+                            } else {
+                                alert(data.tips);
+                            }
+                        }
+                    );
+
+                }
+            </script>
+  </body>
+</html>

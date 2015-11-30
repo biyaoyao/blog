@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link href="ueditor/themes/default/css/ueditor.css" type="text/css" rel="stylesheet">
+       <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/mycss.css' />
+          <style>
+    /*对编辑器进行修改*/
+        #edui1{
+            border-radius:0 !important;
+            
+        }
+        #edui1_toolbarbox {
+            position: relative !important;
+            box-shadow: none !important;
+        }
+        
+        #edui1_toolbarboxouter {
+            background: #fff !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            height: 40px !important;
+            border-bottom: 1px solid #ddd !important;
+        }
+    .sub {
+margin: 0 0 2px 0px !important;
+
+}
+    </style>
+  </head>
+  <body>
+      
+    <%- include header.ejs %>
+<div class="content">
+	  	<div id="main">
+	  		
+	  		<div class="maininput" style="padding-left: 10px;">
+                <br>
+	  			<p>创建新文章</p>
+                <iframe id="hidden" name="hidden" style="display:none"></iframe>
+				<form action="/createNewArticle.action" method="post" id="articleForm" target="hidden">
+		  			
+					
+					
+					<div class="tit">标题:
+						
+						<input style="text-indent:10px;border: 1px solid #ccc;height: 20px;outline: none;" type="text" name="title" id="title" size="50" maxlength="20" value="">  [文章标题最多不能超过20字符]
+						<input type="hidden" id="author" name="author" value="<%=session.toString()=='null'?"":session.username%>">
+					</div>
+				 <br>
+				    <div class="cat">分类:  
+    
+    <select name="type_id" id="a_t" style="width: 200px;
+border: 1px solid #ccc;
+height: 25px;
+outline: none;">
+        
+        <% for(var i=0;i<typeList.length;i++){
+       var type=typeList[i];
+    %>
+    
+    <option value="<%=type.type_id%>"><%=type.type_name%></option>
+<%}%>
+
+</select>
+
+ 
+				    <a href="javascript:addType()">增加新分类</a>  <span id="error2"></span></div>
+                       <div class="con">
+					    <div style="width:700px;margin:20px 0 40px;">
+		<script type="text/plain" id="content" name="content" style="width:100%;height:300px;"></script>
+	</div>
+	
+				    </div>
+				    <div class="error"></div>
+                    
+                    
+				    <div class="sub"><input style="background: #eee;
+border: 1px solid #ccc;
+padding: 5px 10px;
+border-radius: 3px;" type="button" value="发表文章" onclick="newArticle()"></div>
+				</form>
+				
+				
+					<script type="text/javascript">
+						var hid=1;
+						var i=0;
+						$("#a_t option").each(function(){
+							if($(this).val()==hid){
+								$("#a_t").get(0).selectedIndex=i;
+							}
+							i=i+1;
+						});
+					</script>
+				
+			</div>
+		</div>
+	</div>
+         <%- include foot.ejs %>
+      
+      <script type="text/javascript" src="ueditor/third-party/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="ueditor/ueditor.all.js">
+    </script>
+    <script type="text/javascript" charset="utf-8" src="ueditor/lang/zh-cn/zh-cn.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/article.js"></script>
+      
+    
+      <script type="text/javascript">
+    
+          var  editor=UE.getEditor('content');
+   </script>
+  </body>
+</html>

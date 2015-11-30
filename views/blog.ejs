@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+     <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/mycss.css' />
+  </head>
+  <body>
+      
+    <%- include header.ejs %>
+    
+<div class="content main-content">
+			<div id="main">
+			
+               
+				<div class="left_side">
+                  
+					<div id='atop'>
+                          <%-article_list.length>0?" <div class='to1'>文章列表</div>":""%>
+                       
+                        
+                        <div class="to2">
+                         <% if (session.toString()!='null'){ %>
+                        <a href="/newArticle"><img src="images/postnew.gif" alt="" align="absmiddle">写新文章</a>
+                        
+                        <%}%>
+                        &nbsp;</div>
+                    
+                    
+                    </div>
+                    
+						<br>
+						
+						
+						
+							
+								<div id="alist">
+                                    
+                                    <%-article_list.length==0?"<h2>没有文章</h2>":""%>
+                                    <%for(var i=0;i<article_list.length;i++){
+    var article=article_list[i];
+    
+    %>
+                                   
+									<div class="atit"><a href="articleDetail?article_id=<%=article.article_id%>"><%=article.title%></a></div>
+									<div class="atime"><%=article.create_time%></div>
+									<div class="acon">
+										<%-article.content%>
+									</div>
+									<div class="all"><a href="articleDetail?article_id=<%=article.article_id%>">阅读全文&gt;&gt;</a></div>
+									<div class="aopr">
+										<div class="op">类别：<a href="/blog?type_id=<%=article.type_id%>" title="查看该分类中所有文章"><%=article.type_name%></a>  |  
+											<a href="articleDetail?article_id=<%=article.article_id%>#comment">评论(<%=article.comment_count%>)</a> | <a href="articleDetail?id=1">浏览(<%=article.scan_count%>)</a> 
+										</div>
+								   </div>
+                                     <%}%>
+								 </div>
+							  
+							  <div id="apage">
+								    
+								  	
+							  </div>
+						
+				</div>
+				
+				<div class="right_side">
+					<div id="yboder">
+						<div id="ytype">
+							<div class="aty">
+								<div class="ty1">文章分类</div>
+								<div class="ty2"> <% if (session.toString()!='null'){ %><a href="javascript:editTypeName();"><img src="/images/postnew.gif" alt="" align="absmiddle">编辑</a><%}%></div>
+							</div>
+							<br>
+							<div id="ylist">
+								<ul>
+									 <%for(var i=0;i<type_list.length;i++){
+                                       var type=type_list[i];
+    %>
+										<li><a href="/blog?type_id=<%=type.type_id%>" title="查看该分类中所有文章"><%=type.type_name%></a>(<%=type.article_count%>)</li>
+									<%}%>
+										
+									
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div id="yboder">
+						<div id="acomment">
+							<span><b>最新文章评论</b></span>
+							
+							
+							          <%for(var i=0;i<comment_list.length;i++){
+                                     var comment=comment_list[i];
+    %>
+								
+									<div class="author" style="color:#075181"><!--<span>★</span>-->&nbsp;<%=comment.user%>:</div> 
+									<div class="cont"><a href="articleDetail?article_id=<%=comment.article_id%>#comment"><%-comment.comment%></a></div>  
+								<%}%>
+									
+								
+							
+						</div>
+					</div>
+				</div>
+				<br>
+			</div>
+		</div>
+         <%- include foot.ejs %>
+      <script src="js/article.js"> </script>
+  </body>
+</html>

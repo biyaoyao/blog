@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+   
+  </head>
+  <body>
+      
+    <%- include header.ejs %>
+<div class="content">
+		<div id="main">
+		
+			<div id="msgshow">
+				<a name="leavemsg"></a>
+				<div class="top"><span class="title">留言板</span>　[   认识或不认识我的朋友,留下你的脚印吧...  ]</div>
+				<div id="publish_comment">
+	   				<form action="#" method="post">
+		   				<input type="hidden" id="HideId" name="id" value="">
+		   				<input type="hidden" id="HideUser" value="biyaoyao">
+		    			<div class="user">姓　名:  <input type="text" name="user" id="user" size="30" value="biyaoyao" style="border:none;color:#075181;" readonly="readonly"></div>
+	   					
+	   					<div class="userNum">
+	   						内　容:  [  留言长度不能超过<span>500</span>个字符  ]<br>
+	   					</div>
+	   					<div class="word">
+	   						<fck:editor id="reply" basepath="fckeditor/" width="550" height="200" toolbarset="Basic" imagebrowserurl="/blueblog/fckeditor/editor/filemanager/browser/default/browser.html?Type=Image&amp;Connector=connectors/jsp/connector" linkbrowserurl="/blueblog/fckeditor/editor/filemanager/browser/default/browser.html?Connector=connectors/jsp/connector" flashbrowserurl="/blueblog/fckeditor/editor/filemanager/browser/default/browser.html?Type=Flash&amp;Connector=connectors/jsp/connector" imageuploadurl="/blueblog/fckeditor/editor/filemanager/upload/simpleuploader?Type=Image" linkuploadurl="/blueblog/fckeditor/editor/filemanager/upload/simpleuploader?Type=File" flashuploadurl="/blueblog/fckeditor/editor/filemanager/upload/simpleuploader?Type=Flash"> </fck:editor> 
+	   					</div>
+	   					<div class="varcodeinput">
+	   						验证码:  <input type="text" id="code" name="code" onfocus="showCode();" onclick="showCode();" size="4" maxlength="4">
+	   						　[  点击输入框获取验证码,不区分大小写  ]
+	   					</div>
+	   					<div class="varcode" style="display:none">
+							<img src="/randCode" id="randimg">
+							<a href="javascript:refresh()" title="看不清左边的字符?点下换个!">看不清?换一个</a>
+						</div>
+	   					<div class="error"></div>
+	   					<div class="sub"><span id="sub"><input type="submit" value="给我留言" onclick="return leaveMsg(1,-1);"></span>　注:请珍惜我的成果,文明留言</div>
+   					</form>
+  				</div>
+  				<a name="more"></a>
+  				<div class="bottom"><span class="title">网友留言</span>　[   我将定期回复你的留言  ]</div>
+  				<div class="net_msg">
+					
+					
+					
+						
+							<a name="1"></a>
+							<div class="info">
+			   					<div class="num">01</div>
+			   					<div class="user">12121</div>
+			   					<div class="dc_time">2014-08-06</div>
+			   					<div class="op"><a href="#leavemsg" onclick="reply(2,1)">回复</a> | <a href="javascript:delLeavemsg(1)">删除</a></div>
+				   				<br>
+			   				</div>
+		   					<div id="msg1" class="com_cont">1213c1e1</div>
+						
+					
+					<div class="page">
+						
+						
+				   </div>
+				</div>
+			</div>
+		</div>
+	</div>
+         <%- include foot.ejs %>
+  </body>
+</html>
