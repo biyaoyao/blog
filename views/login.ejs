@@ -1,9 +1,4 @@
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-	<head>
-		<title>登陆</title>
-		<style>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><title>登陆</title><style>
 			body,input {
 				margin: 0px 0;
 				padding: 0;
@@ -27,36 +22,4 @@
 			a{text-decoration:underline;}
 			a:link,a:visited{color:#075181;}
 			a:hover{color:red;}
-		</style>
-
-</head>
-
-	<body>
-		  
-		<div id="log">
-			
-				<div class="username">
-					用户名 :　<input type="text" id="user" class="user" maxlength="15">
-				</div>
-				<div class="password">
-					密　码 :　<input type="password" id="pass" class="pass" maxlength="15">
-				</div>
-				<div class="varcode">
-					验证码 :　<input type="text" id="code" class="code" maxlength="4">
-					<span style="color:999;">(不区分大小写)</span>
-				</div>
-				<div class="codeimg">
-					<img id="randimg" src="/randCode" align="absbottom"/>&nbsp;<a href="javascript:refresh();">看不清?换一个</a>
-				</div>
-				<div class="error">
-				</div>
-				<div class="sub">
-					<input type="button" value="登陆" onclick="LoginAction()"/>　　 <input type="reset" value="清空"/> 
-				</div>
-			
-		</div>
-        <script src="/js/jquery.min.js"></script>
-       
-        <script src="/js/base.js"></script>
-	</body>
-</html>
+		</style></head><body><div id=log><div class=username>用户名 : <input type=text id=user class=user maxlength=15></div><div class=password>密 码 : <input type=password id=pass class=pass maxlength=15></div><div class=varcode>验证码 : <input type=text id=code class=code maxlength=4> <span style=color:999;>(不区分大小写)</span></div><div class=codeimg><img id=randimg src=/randCode align=absbottom>&nbsp;<a href=javascript:refresh();>看不清?换一个</a></div><div class=error></div><div class=sub><input type=button value=登陆 onclick=LoginAction()> <input type=reset value=清空></div></div><script src=/js/jquery.min.js></script><script src=/js/base.js></script></body></html>

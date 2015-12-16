@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>
-        <%= title %>
-    </title>
-       <link rel='stylesheet' href='/css/style.css' />
-    <link rel='stylesheet' href='/css/mycss.css' />
-    <style>
+<!DOCTYPE html><html><head><title><%= %></%=></title><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/mycss.css><style>
         textarea {
             width: 90%;
             height: 80px;
@@ -17,149 +8,7 @@
             border: 1px solid #ccc;
             border-radius: 3px;
         }
-    </style>
-</head>
-
-<body>
-
-    <%- include header.ejs %>
-        <div class="content">
-            <div id="main">
-
-                <div id="profile">
-                    <div class="pro_left">
-                        <div class="one">
-                            <div class="top">
-                                <div class="top_left">我的资料</div>
-                                <div class="top_right">
-                                    <% if (session.toString()!='null'){ %>
-                                        <a href="javascript:showProfile();"><img src="images/edit.gif" alt="编辑" align="absmiddle"> 编辑</a>
-                                        <%}%>
-
-                                            &nbsp;</div>
-                                <br>
-                            </div>
-                            <div class="referance">
-
-
-                                <div class="re">姓　　名： <span><%=userinfo.real_name%></span></div>
-                                <div class="re">生　　日： <span><%=userinfo.birthday%></span></div>
-                                <div class="re">家　　乡： <span><%=userinfo.birth_place%></span></div>
-                                <div class="re">现　　居： <span><%=userinfo.live_place%></span></div>
-                                <div class="re">邮　　箱： <span><%=userinfo.email%></span></div>
-                                <div class="re">个人简介： <span><%=userinfo.introduce%></span></div>
-                            </div>
-                        </div>
-
-                        <div class="one">
-                            <div class="top">
-                                <div class="top_left">留言板</div>
-                                <br>
-                            </div>
-                            <div class="leave_msg">
-
-
-
-                                <%for(var i=0;i<leavList.length;i++){
-                       
-    %>
-                                    <div class="info">
-                                        <div class="num">
-                                            <%=i+1%>
-                                        </div>
-                                        <div class="user">
-                                            <%=leavList[i].user%>
-                                        </div>
-                                        <div class="dc_time">
-                                            <%=leavList[i].create_time%>
-                                        </div>
-                                        <div class="op"></div>
-                                        <br>
-                                    </div>
-                                    <div id="msg1" class="com_cont">
-                                        <%=leavList[i].content%>
-                                    </div>
-
-                                    <%}%>
-                            </div>
-
-                        </div>
-                        <a name="reply"></a>
-                        <div id="publish_comment">
-
-
-                            <div class="user">姓　名:
-                                <input type="text" name="user" id="user" size="30">
-                            </div>
-                            <div class="userNum">
-                                内　容: [ 留言长度不能超过<span>500</span>个字符 ]
-                                <br>
-                            </div>
-                            <div class="word">
-                                <textarea maxlength="500" id="content"></textarea>
-                            </div>
-                            <!-- 
-<div class="varcodeinput">
-                                    验证码:
-                                    <input type="text" id="code" name="code" onfocus="showCode();" onclick="showCode();" size="4" maxlength="4"> 　[ 点击输入框获取验证码,不区分大小写 ]
-                                </div>
-                                <div class="varcode" >
-                                    <img src="/randCode" id="randimg">
-                                    <a href="javascript:refresh()" title="看不清左边的字符?点下换个!">看不清?换一个</a>
-                                </div>-->
-                            <div class="error"></div>
-                            <div class="sub"><span id="sub"><input type="button" value="给我留言" onclick="leaveMsg();"></span></div>
-
-                        </div>
-                    </div>
-                    <div class="pro_right">
-                        <div class="two">
-                            <div class="top">
-                                
-                                <div class="top_right">
-                                    <% if (session.toString()!='null'){ %>
-                                        <a href="/imgUpload"><img src="images/ico_uploadpic.gif" align="absmiddle">上传新照片 </a>&nbsp;
-                                        <a href="/albumList"><img src="images/edit.gif" alt="" align="absmiddle"> 查看相片</a>
-                                        <%}%>&nbsp;</div>
-                                <br>
-                            </div>
-
-                        </div>
-                        <div class="two">
-                            <div class="top">
-                                <div class="top_left">最近发表文章</div>
-                                <br>
-                            </div>
-
-                            <% for(var i=0;i<articleList.length;i++){ 
-                             var article=articleList[i];
-    %>
-                                <div class="latesta">
-
-                                    <a href="articleDetail?article_id=<%=article.article_id%>">
-                                       <%=article.title%>
-                                    </a>
-
-
-
-
-                                </div>
-
-                                <br>
-                                <%}%>
-                        </div>
-                    </div>
-                    <br>
-                </div>
-            </div>
-        </div>
-        <%- include foot.ejs %>
-
-
-
-
-
-            <script type="text/javascript">
+    </style></head><body><%- include header.ejs %><div class=content><div id=main><div id=profile><div class=pro_left><div class=one><div class=top><div class=top_left>我的资料</div><div class=top_right><% if (session.tostring()!=null ){ %><a href=javascript:showProfile();><img src=images/edit.gif alt=编辑 align=absmiddle> 编辑</a><%}%>&nbsp;</%}%></%></div><br></div><div class=referance><div class=re>姓 名： <span><%=userinfo.real_name%></%=userinfo.real_name%></span></div><div class=re>生 日： <span><%=userinfo.birthday%></%=userinfo.birthday%></span></div><div class=re>家 乡： <span><%=userinfo.birth_place%></%=userinfo.birth_place%></span></div><div class=re>现 居： <span><%=userinfo.live_place%></%=userinfo.live_place%></span></div><div class=re>邮 箱： <span><%=userinfo.email%></%=userinfo.email%></span></div><div class=re>个人简介： <span><%=userinfo.introduce%></%=userinfo.introduce%></span></div></div></div><div class=one><div class=top><div class=top_left>留言板</div><br></div><div class=leave_msg><%for(var i="0;i<leavList.length;i++){" %><div class=info><div class=num><%=i+1%></%=i+1%></div><div class=user><%=leavlist[i].user%></%=leavlist[i].user%></div><div class=dc_time><%=leavlist[i].create_time%></%=leavlist[i].create_time%></div><div class=op></div><br></div><div id=msg1 class=com_cont><%=leavlist[i].content%></%=leavlist[i].content%></div><%}%></%}%></%for(var></div></div><a name=reply></a><div id=publish_comment><div class=user>姓 名: <input type=text name=user id=user size=30></div><div class=userNum>内 容: [ 留言长度不能超过<span>500</span>个字符 ]<br></div><div class=word><textarea maxlength=500 id=content></textarea></div><div class=error></div><div class=sub><span id=sub><input type=button value=给我留言 onclick=leaveMsg();></span></div></div></div><div class=pro_right><div class=two><div class=top><div class=top_right><% if (session.tostring()!=null ){ %><a href=/imgUpload><img src=images/ico_uploadpic.gif align=absmiddle>上传新照片</a>&nbsp; <a href=/albumList><img src=images/edit.gif align=absmiddle> 查看相片</a><%}%>&nbsp;</%}%></%></div><br></div></div><div class=two><div class=top><div class=top_left>最近发表文章</div><br></div><% for(var i="0;i<articleList.length;i++){" var article=articleList[i]; %><div class=latesta><a href="articleDetail?article_id=<%=article.article_id%>"><%=article.title%></%=article.title%></a></div><br><%}%></%}%></%></div></div><br></div></div></div><%- include foot.ejs %><script type=text/javascript>
                 function leaveMsg() {
 
 
@@ -180,7 +29,4 @@
                     );
 
                 }
-            </script>
-</body>
-
-</html>
+            </script></%-></%-></body></html>

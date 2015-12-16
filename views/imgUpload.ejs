@@ -1,105 +1,8 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>
-        <%= title %>
-    </title>
-      <link rel='stylesheet' href='/css/style.css' />
-    <link rel='stylesheet' href='/css/mycss.css' />
-    
-      
-</head>
-
-<body>
-
-    <%- include header.ejs %>
-        <div class="content main-content">
-            <div id="main">
-                <div id="imgupload">
-
-                    <input type="hidden" value="" id="hideTypeid">
-                    <div class="uptop"><b>相片上传</b>:一次最多可上传5张，每张大小在200kb以内。您可以上传JPG、GIF、BMP和PNG格式的照片</div>
-                   
-
-
-                        <input type="hidden" name="struts.token.name" value="struts.token">
-                        <input type="hidden" name="struts.token" value="EOENWBKS0E774FY3CTD900DNQGPDMXDQ">
-                        <div id="uploadarea">
-
-                            <div class="onefile">
-                                <div class="file">
-                                    <input type="file" name="upload" id="file0" onchange="fileupload(this,0)">
-                                    <br><span id="error0" class="error"></span></div>
-                                <div class="preview"><img id="pre0" src="images/img_preview.gif"></div>
-                                <div class="desc">描述:
-                                    <br>
-                                    <textarea name="desc" id="desc0"></textarea>
-                                </div>
-                            </div>
-                            <div class="onefile">
-                                <div class="file">
-                                    <input type="file" name="upload" id="file1" onchange="fileupload(this,1)">
-                                    <br><span id="error1" class="error"></span></div>
-                                <div class="preview"><img id="pre1" src="images/img_preview.gif"></div>
-                                <div class="desc">描述:
-                                    <br>
-                                    <textarea name="desc" id="desc1"></textarea>
-                                </div>
-                            </div>
-                            <div class="onefile">
-                                <div class="file">
-                                    <input type="file" name="upload" id="file2" onchange="fileupload(this,2)">
-                                    <br><span id="error2" class="error"></span></div>
-                                <div class="preview"><img id="pre2" src="images/img_preview.gif"></div>
-                                <div class="desc">描述:
-                                    <br>
-                                    <textarea name="desc" id="desc2"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="uphide">
-                            <a class="album" href="/albumList"><img src="images/album.gif">返回相册</a>
-                            <a class="addmore" href="javascript:addmore(2);"><img src="images/ico_uploadpic.gif" align="absmiddle">上传更多相片</a>
-                        </div>
-                        <div class="cat">
-                            相册类别:
-
-
-                            <select name="typeid" id="typeid">
-                                <% for(var i=0;albumLis!=undefined&&i<albumLis.length;i++){
-                                var album=albumLis[i];
-    
-                                 %>
-                                    <option value="<%=album.image_type_id%>">
-                                        <%=album.type_name%>
-                                    </option>
-
-                                    <%}%>
-
-                            </select>
-
-
-                            <a href="javascript:opAlbum(-1,'','',false);"><img src="images/ico_creatset.gif" align="absmiddle">创建新相册 </a>
-                        </div>
-                        <div class="error">
-                        </div>
-                        <div class="sub">
-                            <input type="button" value="上传" onclick="Upload();">
-                        </div>
-                   
-                </div>
-                <br>
-            </div>
-        </div>
-        <%- include foot.ejs %>
-     <script src="js/bmob.js"></script>
-    <script src="js/albumList.js"></script>
-    <script>
+<!DOCTYPE html><html><head><title><%= %></%=></title><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/mycss.css></head><body><%- include header.ejs %><div class="content main-content"><div id=main><div id=imgupload><input type=hidden id=hideTypeid><div class=uptop><b>相片上传</b>:一次最多可上传5张，每张大小在200kb以内。您可以上传JPG、GIF、BMP和PNG格式的照片</div><input type=hidden name=struts.token.name value=struts.token> <input type=hidden name=struts.token value=EOENWBKS0E774FY3CTD900DNQGPDMXDQ><div id=uploadarea><div class=onefile><div class=file><input type=file name=upload id=file0 onchange=fileupload(this,0)><br><span id=error0 class=error></span></div><div class=preview><img id=pre0 src=images/img_preview.gif></div><div class=desc>描述:<br><textarea name=desc id=desc0></textarea></div></div><div class=onefile><div class=file><input type=file name=upload id=file1 onchange=fileupload(this,1)><br><span id=error1 class=error></span></div><div class=preview><img id=pre1 src=images/img_preview.gif></div><div class=desc>描述:<br><textarea name=desc id=desc1></textarea></div></div><div class=onefile><div class=file><input type=file name=upload id=file2 onchange=fileupload(this,2)><br><span id=error2 class=error></span></div><div class=preview><img id=pre2 src=images/img_preview.gif></div><div class=desc>描述:<br><textarea name=desc id=desc2></textarea></div></div></div><div class=uphide><a class=album href=/albumList><img src=images/album.gif>返回相册</a> <a class=addmore href=javascript:addmore(2);><img src=images/ico_uploadpic.gif align=absmiddle>上传更多相片</a></div><div class=cat>相册类别:<select name=typeid id=typeid><% for(var i="0;albumLis!=undefined&&i<albumLis.length;i++){" var album=albumLis[i]; %><option value="<%=album.image_type_id%>"><%=album.type_name%></%=album.type_name%></option><%}%></%}%></%></select><a href="javascript:opAlbum(-1,'','',false);"><img src=images/ico_creatset.gif align=absmiddle>创建新相册</a></div><div class=error></div><div class=sub><input type=button value=上传 onclick=Upload();></div></div><br></div></div><%- include foot.ejs %><script src=js/bmob.js></script><script src=js/albumList.js></script><script>
     
     //上传图片
 
-	Bmob.initialize("21313123131231", "2342134131231231231222222");
+	Bmob.initialize("71435361b18a1b17e90d85e4834fa488", "c2009ad73e10d9c71f5545f191073834");
 
 	
 	function fileupload(_this,id) {
@@ -204,7 +107,4 @@
        
     
     
-    </script>
-</body>
-
-</html>
+    </script></%-></%-></body></html>

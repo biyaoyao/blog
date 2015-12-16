@@ -112,6 +112,7 @@ app.get('/editImage.action', action.editImageActin);
 app.get('/deleteImage.action', action.deleteImageActin);
 //留言
 app.get('/leaveMsg.action', action.leaveMsgAction);
+app.get('/visit.action', action.visitAction);
 //
 //验证码生成页面
 app.get('/randCode', action.randCode);

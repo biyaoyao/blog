@@ -1,39 +1,15 @@
 var http = require('http');
 var md5 = require('../util/Md5');
-/*var nodegrass = require('nodegrass');*/
+var query=require("../util/mysql.js");  
+var nodegrass = require('nodegrass');
 var httpRequest = require('../util/httpRequest');
-var mysql = require('mysql');
-var log4js = require('log4js');
-var connection = mysql.createConnection({
-    host: '你数据库ip',
-    user: '你数据库用户名 ',
-    password: '你数据库密码',
-    database: '数据库',
-    port: 3306
-});
+var logger = require('../util/log4js.js');
 var os = require('os');
 var ccap = require('ccap')();
 /**
  * 登录
  */
 
-var date = new Date();
-log4js.configure({
-    appenders: [
-        {
-            type: 'console'
-        }, {
-            type: 'file',
-            filename: 'public/logs/' + date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + '.log',
-            maxLogSize: 1024,
-            backups: 4,
-            category: 'normal'
-    }
-  ],
-    replaceConsole: true
-});
-
-var logger = log4js.getLogger('normal');
 
 exports.loginAction = function (req, res) {
     var user_name = req.query.user_name,
@@ -42,13 +18,11 @@ exports.loginAction = function (req, res) {
         tips = "";
     var session = req.session;
     var result = false;
-
     if (user_name == undefined || user_name.trim().length == 0) {
         tips = "用户名为空！";
         result = false;
         write(result, tips, res);
         return;
-
     }
     if (password == undefined || password.trim().length == 0) {
         tips = "密码不能为空";
@@ -58,7 +32,6 @@ exports.loginAction = function (req, res) {
 
     } else {
         password = md5.hex_md5(password);
-
     }
     if (rand == undefined || rand.trim().length == 0) {
         tips = "验证码不能为空!";
@@ -66,13 +39,7 @@ exports.loginAction = function (req, res) {
         write(result, tips, res);
         return;
     }
-
-
     var randCode = session.code + "";
-    // var ss = md5.hex_md5("11111");
-
-    /*rand=MD5.code(rand.toLocaleLowerCase());*/
-
     if (rand == undefined || rand.toLowerCase() != randCode.toLowerCase()) {
         tips = "验证码不正确!";
         result = false;
@@ -80,7 +47,7 @@ exports.loginAction = function (req, res) {
         return;
     }
     var sql = "select tl.username,tl.password,tu.* from tb_login tl LEFT JOIN tb_userinfo as tu on tl.id=tu.id where username='" + user_name + "'";
-    connection.query(sql, function (err, rows, fields) {
+   query(sql, function (err, rows, fields) {
         if (err) {
 
             tips = "数据库加载失败!";
@@ -96,7 +63,6 @@ exports.loginAction = function (req, res) {
             return;
 
         } else {
-
             if (password == rows[0].password) {
                 tips = "登陆成功！";
                 result = true;
@@ -109,22 +75,19 @@ exports.loginAction = function (req, res) {
                 session.live_place = rows[0].live_place;
                 session.introduce = rows[0].introduce;
                 write(result, tips, res);
-
-
             } else {
-
                 tips = "密码不正确！";
                 result = false;
                 write(result, tips, res);
                 return;
-
             }
         }
-
 
     });
 
 };
+
+
 //登出接口
 exports.logoutAction = function (req, res) {
         req.session.destroy();
@@ -132,355 +95,100 @@ exports.logoutAction = function (req, res) {
         var result = true;
         write(result, tips, res);
     }
-    //主页
-exports.homeAction = function (req, res) {
-       
-        var ip = httpRequest.getClientIp(req).replace('::ffff:', '');
-/*
-        nodegrass.get("http://ip.taobao.com//service/getIpInfo.php?ip=" + ip, function (data, status, headers) {
-            var sql = "";
-            data = eval('(' + data + ')');*/
-            var sql = "INSERT into tb_visit(ip,visit_time) VALUE('" + ip + "',NOW())";
-
-            connection.query(sql, function (err, rows, fields) {
 
 
-            });
-
-
-
-
-       /* }, 'gbk').on('error', function (e) {
-
-
-        });
-*/
-        connection.query("select COUNT(*) as visit_count from tb_visit", function (err, rows, fields) {
-            var visit_count = rows[0].visit_count;
-
-            var articleList = "select ta.*,tat.type_name,count(DISTINCT tac.comment_id) as comment_count,count(DISTINCT tas.scan_id) as scan_count from tb_article ta LEFT JOIN tb_articel_comment as tac on tac.article_id=ta.article_id LEFT JOIN tb_article_scan as tas  on tas.article_id=ta.article_id LEFT JOIN tb_article_type as tat  on tat.type_id=ta.type_id    GROUP  BY ta.article_id  ORDER BY  tat.type_id,  ta.create_time DESC";
-
-            //
-
-            connection.query("select * from tb_userinfo", function (err, rows, fields) {
-
-                var userinfo = rows[0];
-                connection.query(articleList, function (err, rows, fields) {
-                    var typeList = new Array();
-
-
-                    var type_id = -1;
-
-                    for (var i = 0; i < rows.length; i++) {
-
-                        if (type_id != rows[i].type_id) {
-                            type_id = rows[i].type_id;
-                            var type = new Object();
-                            type.type_id = type_id;
-                            type.type_name = rows[i].type_name;
-                            type.type_desc = rows[i].type_desc;
-                            typeList.push(type);
-
-                        }
-
-                    }
-
-
-
-
-
-                    var type = new Object();
-                    for (var j = 0; j < typeList.length; j++) {
-                        var articleList = new Array();
-                        for (var i = 0; i < rows.length; i++) {
-
-                            if (typeList[j].type_id == rows[i].type_id) {
-                                var article = new Object();
-                                article.article_id = rows[i].article_id;
-                                article.article_id = rows[i].article_id;
-                                article.title = rows[i].title;
-                                article.content = rows[i].content;
-                                article.author = rows[i].author;
-                                article.create_time = rows[i].create_time;
-                                article.scan_count = rows[i].scan_count;
-                                article.comment_count = rows[i].comment_count;
-                                articleList.push(article);
-
-                            }
-
-
-                        }
-                        typeList[j].articleList = articleList;
-
-                    }
-
-                    res.render('index', {
-                        session: req.session.username == null ? "null" : req.session,
-                        visit_count: visit_count,
-                        userinfo: userinfo,
-                        title: "",
-                        typeList: typeList
-                    });
-
-                });
-
-            });
-
-
-        });
-
-
-    }
-    //博客
-exports.blogAction = function (req, res) {
-    logger.debug('blog');
-    var type_id = req.query.type_id;
-    if (type_id != undefined) {
-
-        type_id = "where ta.type_id=" + type_id;
-    } else {
-
-        type_id = "";
-    }
-
-    var article_sql = "select ta.*,tat.type_name,count(DISTINCT tac.comment_id) as comment_count,count(DISTINCT tas.scan_id) as scan_count from tb_article ta LEFT JOIN tb_articel_comment as tac on tac.article_id=ta.article_id LEFT JOIN tb_article_scan as tas  on tas.article_id=ta.article_id LEFT JOIN tb_article_type as tat  on tat.type_id=ta.type_id  " + type_id + "   GROUP  BY ta.article_id  ORDER BY  tat.type_id,  ta.create_time DESC ";
-
-
-    
-    connection.query(article_sql, function (err, rows, fields) {
-        var articleList = rows;
-
-
-
-        var type_sql = "select article_type.* ,count(DISTINCT article.article_id) as article_count from tb_article_type article_type LEFT JOIN tb_article as article on article.type_id=article_type.type_id GROUP BY article_type.type_id";
-
-        connection.query(type_sql, function (err, rows, fields) {
-            var type_list = rows;
-            var comment_sql = "SELECT * from tb_articel_comment ORDER BY comment_time desc limit 4";
-            connection.query(comment_sql, function (err, rows, fields) {
-                var comment_list = rows;
-
-                res.render('blog', {
-                    session: req.session.username == null ? "null" : req.session,
-                    title: "",
-                    article_list: articleList,
-                    type_list: type_list,
-                    comment_list: comment_list
-                });
-
-            });
-        });
-
-    });
-
-
-
-}
-
-//创建文章分类
+    //创建文章分类
 exports.addNewArticleTypeAction = function (req, res) {
-
-    //   
     var type_name = req.query.type_name,
         type_desc = req.query.type_desc,
         tips = "",
         result = false,
         session = req.session;
-
-
     if (type_name == undefined || type_name.trim().length == 0) {
         tips = "分类名不能为空！";
         result = false;
         write(result, tips, res);
         return;
-
     }
     if (type_desc == undefined || type_desc.trim().length == 0) {
         tips = "分类描述不能为空";
         result = false;
         write(result, tips, res);
         return;
-
     }
-
-
     var sql = "select * from tb_article_type where type_name='" + type_name + "'";
-    connection.query(sql, function (err, rows, fields) {
+   query(sql, function (err, rows, fields) {
         if (err) {
-
             tips = "数据库加载失败!";
             result = false;
             write(result, tips, res);
-           
             return;
-
         };
         if (rows.length > 0) {
             tips = "该分类已存在";
             result = false;
             write(result, tips, res);
             return;
-
         } else {
             var sql1 = "INSERT INTO tb_article_type (type_name,type_desc) VALUES('" + type_name + "','" + type_desc + "')";
-            connection.query(sql1, function (err, rows, fields) {
-
-               
+           query(sql1, function (err, rows, fields) {
                 tips = "创建成功!";
                 result = true;
                 write(result, tips, res);
-
-
             });
-
         }
-
     });
-
 }
 
 //修改文章分类
 exports.renameArticleTypeAction = function (req, res) {
-
-    //   
     var type_name = req.query.type_name,
         type_id = req.query.type_id,
         tips = "",
         result = false,
         session = req.session;
-
-
     if (type_name == undefined || type_name.trim().length == 0) {
         tips = "分类名不能为空！";
         result = false;
         write(result, tips, res);
         return;
-
     }
     if (type_id == undefined || type_id.trim().length == 0) {
         tips = "未指定分类";
         result = false;
         write(result, tips, res);
         return;
-
     }
-
-
-    var sql = "update tb_article_type set type_name='"+type_name+"' where type_id=" + type_id ;
-    connection.query(sql, function (err, rows, fields) {
-       tips = "修改成功!";
+    var sql = "update tb_article_type set type_name='" + type_name + "' where type_id=" + type_id;
+   query(sql, function (err, rows, fields) {
+        tips = "修改成功!";
         result = true;
         write(result, tips, res);
-
     });
-
 }
 
 //删除文章分类
 exports.adelArticleTypeAction = function (req, res) {
-
-    //   
-    var type_id = req.query.type_id,
-        tips = "",
-        result = false,
-        session = req.session;
-
-
-   
-    if (type_id == undefined || type_id.trim().length == 0) {
-        tips = "未指定分类";
-        result = false;
-        write(result, tips, res);
-        return;
-
-    }
-
-
-    var sql = "delete from tb_article_type  where type_id=" + type_id ;
-    connection.query(sql, function (err, rows, fields) {
-        tips = "删除成功!";
-        result = true;
-        write(result, tips, res);
-
-    });
-
-}
-//获取文章类型
-exports.articleTypeAction = function (req, res) {
-
-
-
-        var sql = "select * from tb_article_type";
-
-        connection.query(sql, function (err, rows, fields) {
-
-
-            res.render('newArticle', {
-                session: req.session.username == null ? "null" : req.session,
-                title: "",
-                typeList: rows
-            });
+        var type_id = req.query.type_id,
+            tips = "",
+            result = false,
+            session = req.session;
+        if (type_id == undefined || type_id.trim().length == 0) {
+            tips = "未指定分类";
+            result = false;
+            write(result, tips, res);
+            return;
+        }
+        var sql = "delete from tb_article_type  where type_id=" + type_id;
+       query(sql, function (err, rows, fields) {
+            tips = "删除成功!";
+            result = true;
+            write(result, tips, res);
 
         });
 
-
-
-        //
-
-
-
     }
-    //获取文章详情
-exports.articleDetailAction = function (req, res) {
-        logger.debug('articleDetailAction');
-        var article_id = req.query.article_id;
-        var type = req.query.type;
 
-        var sql = "select ta.*,tat.type_name,count(DISTINCT tac.comment_id) as comment_count,count(DISTINCT tas.scan_id) as scan_count from tb_article ta LEFT JOIN tb_articel_comment as tac on tac.article_id=ta.article_id LEFT JOIN tb_article_scan as tas  on tas.article_id=ta.article_id LEFT JOIN tb_article_type as tat  on tat.type_id=ta.type_id where ta.article_id=" + article_id;
-        var comment_sql = "SELECT * from tb_articel_comment where article_id=" + article_id + " ORDER BY comment_time desc";
-        connection.query(sql, function (err, rows, fields) {
-            var article = rows[0];
-           
-            //res.render('articleDetail', { session: req.session,title:"",article:article });
-
-            connection.query(comment_sql, function (err, rows, fields) {
-                var comment_list = rows;
-
-                var ip = httpRequest.getClientIp(req).replace('::ffff:', '');
-                if (type == undefined) {
-                   /* nodegrass.get("http://ip.taobao.com//service/getIpInfo.php?ip=" + ip, function (data, status, headers) {
-                        var data = eval('(' + data + ')');*/
-                        var scan_sql = "INSERT INTO tb_article_scan(article_id,ip,scan_time) VALUES (" + article_id + ",'" + ip +  "',NOW())";
-                        connection.query(scan_sql, function (err, rows, fields) {
-
-                        });
-                   /* }, 'gbk').on('error', function (e) {
-
-
-                    });*/
-
-                }
-
-                
-                res.render('articleDetail', {
-                    session: req.session.username == null ? "null" : req.session,
-                    title: "",
-                    article: article,
-                    comment_list: comment_list
-                });
-
-            });
-
-        });
-
-
-
-        //
-
-
-
-    }
-    //
 
 
 //创建新文章
@@ -519,13 +227,13 @@ exports.createNewArticleAction = function (req, res) {
 
 
     var sql = "select * from tb_article where title='" + title + "'";
-    connection.query(sql, function (err, rows, fields) {
+   query(sql, function (err, rows, fields) {
         if (err) {
 
             tips = "数据库加载失败!";
             result = false;
             callback(result, tips, res);
-           
+
             return;
 
         };
@@ -537,7 +245,7 @@ exports.createNewArticleAction = function (req, res) {
 
         } else {
             var sql1 = "INSERT INTO tb_article (type_id,title,content,author,create_time) VALUES('" + type_id + "','" + title + "','" + content + "','" + author + "',now())";
-            connection.query(sql1, function (err, rows, fields) {
+           query(sql1, function (err, rows, fields) {
 
 
                 tips = "创建成功!";
@@ -620,7 +328,7 @@ exports.commentArticleAction = function (req, res) {
 
 
     var sql = "INSERT into tb_articel_comment(article_id,user,comment,comment_time)  VALUES('" + article_id + "','" + user + "','" + comment + "',now())";
-    connection.query(sql, function (err, rows, fields) {
+   query(sql, function (err, rows, fields) {
 
         tips = "发表成功!";
         result = true;
@@ -662,7 +370,7 @@ exports.leaveMsgAction = function (req, res) {
 
 
     var sql = "INSERT into tb_leave_msg(user,content,create_time)  VALUES('" + user + "','" + content + "',now())";
-    connection.query(sql, function (err, rows, fields) {
+   query(sql, function (err, rows, fields) {
 
         tips = "留言成功!";
         result = true;
@@ -702,7 +410,7 @@ exports.addImageTypeAction = function (req, res) {
 
 
     var sql = "INSERT into tb_img_type(type_name,type_desc,create_time) VALUES('" + type_name + "','" + type_desc + "',NOW())";
-    connection.query(sql, function (err, rows, fields) {
+   query(sql, function (err, rows, fields) {
 
         tips = "创建成功!";
         result = true;
@@ -750,7 +458,7 @@ exports.editImageTypeActin = function (req, res) {
 
 
     var sql = "UPDATE tb_img_type set type_name='" + type_name + "' ,type_desc='" + type_desc + "',create_time=NOW() where image_type_id=" + image_type_id;
-    connection.query(sql, function (err, rows, fields) {
+   query(sql, function (err, rows, fields) {
 
         tips = "修改成功!";
         result = true;
@@ -780,7 +488,7 @@ exports.deleteImageTypeActin = function (req, res) {
     }
 
     var sql = "delete img,type from tb_img_type type LEFT JOIN tb_img as img on img.image_type_id=type.image_type_id where type.image_type_id=" + image_type_id;
-    connection.query(sql, function (err, rows, fields) {
+   query(sql, function (err, rows, fields) {
 
         tips = "删除成功!";
         result = true;
@@ -820,7 +528,7 @@ exports.editImageActin = function (req, res) {
 
 
     var sql = "UPDATE tb_img set img_desc='" + img_desc + "',create_time=NOW() where img_id=" + img_id;
-    connection.query(sql, function (err, rows, fields) {
+   query(sql, function (err, rows, fields) {
 
         tips = "修改成功!";
         result = true;
@@ -850,7 +558,7 @@ exports.deleteImageActin = function (req, res) {
     }
 
     var sql = "delete  from  tb_img  where img_id=" + img_id;
-    connection.query(sql, function (err, rows, fields) {
+   query(sql, function (err, rows, fields) {
 
         tips = "删除成功!";
         result = true;
@@ -863,48 +571,6 @@ exports.deleteImageActin = function (req, res) {
 }
 
 
-
-
-//
-
-
-
-exports.albumListAction = function (req, res) {
-
-    var sql = "select type.*,COUNT(img.img_id) as img_count,IFNULL(img.img_url,'images/album_no_pic.gif') as cover from tb_img_type type LEFT JOIN tb_img as img on type.image_type_id=img.image_type_id GROUP BY type.image_type_id";
-
-    connection.query(sql, function (err, rows, fields) {
-
-        res.render('albumList', {
-            session: req.session.username == null ? "null" : req.session,
-            albumLis: rows,
-            title: ""
-        });
-
-    });
-
-
-
-}
-
-//上传相册页面
-exports.imgUploadAction = function (req, res) {
-
-    var sql = "select type.*,COUNT(img.img_id) as img_count,IFNULL(img.img_url,'images/album_no_pic.gif') as cover from tb_img_type type LEFT JOIN tb_img as img on type.image_type_id=img.image_type_id GROUP BY type.image_type_id";
-
-    connection.query(sql, function (err, rows, fields) {
-
-        res.render('imgUpload', {
-            session: req.session.username == null ? "null" : req.session,
-            albumLis: rows,
-            title: ""
-        });
-
-    });
-
-
-
-}
 
 //
 
@@ -962,7 +628,7 @@ exports.sumbitImgAction = function (req, res) {
 
 
 
-            connection.query(sql, function (err, rows, fields) {
+           query(sql, function (err, rows, fields) {
 
                 tips = "上传成功!";
                 result = true;
@@ -975,89 +641,13 @@ exports.sumbitImgAction = function (req, res) {
         }
 
     }
-    //
-    //res.render('imgUpload', { session: req.session,title:"" });
 
-/**
- * 
- * profileAction
- * @param {object}   req [[Description]]
- * @param {[[Type]]} res [[Description]]
- */
-exports.profileAction = function (req, res) {
 
-        var sql = "select * from tb_userinfo";
 
-        connection.query("select * from tb_article ORDER BY create_time LIMIT 10", function (err, rows, fields) {
-            var articleList = rows;
-            connection.query("select * from tb_leave_msg", function (err, rows, fields) {
-                var leavList = rows;
-                connection.query(sql, function (err, row, fields) {
-                    var userinfo = row[0];
-                    res.render('profile', {
-                        session: req.session.username == null ? "null" : req.session,
-                        userinfo: userinfo,
-                        leavList: leavList,
-                        articleList: articleList,
-                        title: ""
-                    });
 
-                });
-            });
-        });
-
-    }
     /**
-     * 
-     * msgBoardAction
-     * 
-     * @param {object}   req [[Description]]
-     * @param {[[Type]]} res [[Description]]
+     * 验证码生成
      */
-exports.msgBoardAction = function (req, res) {
-
-    connection.query("select * from tb_leave_msg", function (err, rows, fields) {
-        var leavList = rows;
-        res.render('msgBoard', {
-            session: req.session.username == null ? "null" : req.session,
-            leavList: leavList,
-            title: ""
-        });
-    });
-
-}
-exports.albumDetailAction = function (req, res) {
-    var image_type_id = req.query.image_type_id;
-    var sql = "select * from tb_img where image_type_id=" + image_type_id;
-
-    connection.query(sql, function (err, rows, fields) {
-
-        res.render('albumDetail', {
-            session: req.session.username == null ? "null" : req.session,
-            imgList: rows,
-            title: ""
-        });
-
-    });
-
-}
-
-//
-exports.articleTypeEditAction = function (req, res) {
-   
-         var type_sql = "select article_type.* from tb_article_type article_type";
-        connection.query(type_sql, function (err, rows, fields) {
-            res.render('articleTypeEdit', {
-            session: req.session.username == null ? "null" : req.session,
-            typeList: rows,
-            title: ""
-        });
-        });
-
-}
-/**
- * 验证码生成
- */
 exports.randCode = function (req, res) {
 
     if (req.url == '/favicon.ico') return res.end(''); //Intercept request favicon.ico
@@ -1068,21 +658,90 @@ exports.randCode = function (req, res) {
 
     var buf = ary[1];
     req.session.code = txt;
-      var ip = httpRequest.getClientIp(req).replace('::ffff:', '');
-    logger.debug("code:"+txt);
-    logger.debug("ip:"+ip);
+    var ip = httpRequest.getClientIp(req).replace('::ffff:', '');
+    logger.debug("code:" + txt);
+    logger.debug("ip:" + ip);
     res.end(buf);
 
-   
+
 
 };
+/**
+ * 
+ * 
+ * @param {[[Type]]} result [[Description]]
+ * @param {[[Type]]} tips   [[Description]]
+ * @param {[[Type]]} res    [[Description]]
+ */
 
+exports.visitAction = function (req, res) {
+    var tips = "",
+        result = false,
+        type = req.query.type,
+        article_id=req.query.article_id,
+        ip = httpRequest.getClientIp(req).replace('::ffff:', '');
+    nodegrass.get("http://ip.taobao.com//service/getIpInfo.php?ip=" + ip, function (data, status, headers) {
+        var data = eval('(' + data + ')');
+        if (type == undefined) {
+            tips = "var jsonp='参数出错'";
+            result = false;
+            writeJsonp(result, tips, res);
+            return;
+        }
+        if (data.code != 0) {
+            tips = "var jsonp='参数出错'";
+            result = false;
+            writeJsonp(result, tips, res);
+            return;
+        }
+        var sql = "";
+        if (type == 0) {
+            sql = "INSERT into tb_visit(ip,country,area,province,city,ip_type,visit_time) VALUE('" + ip + "','" + unescape(data.data.country) + "','" + unescape(data.data.area) + "','" + unescape(data.data.region) + "','" + unescape(data.data.city) + "','" + unescape(data.data.isp) + "',NOW())";
+        } else if (type == 1&&article_id!=undefined) {
+            sql = "INSERT INTO tb_article_scan(article_id,ip,country,area,province,city,ip_type,scan_time) VALUES (" + article_id + ",'" + ip + "','" + unescape(data.data.country) + "','" + unescape(data.data.area) + "','" + unescape(data.data.region) + "','" + unescape(data.data.city) + "','" + unescape(data.data.isp) + "',NOW())";
+
+        } else {
+
+            tips = "var jsonp='参数出错！'";
+            result = false;
+            writeJsonp(result, tips, res);
+            return;
+
+        }
+      logger.debug('sql:'+sql);
+       query(sql, function (err, rows, fields) {
+            tips = "var jsonp='少年你终于发现了！'";
+            
+            result = true;
+            writeJsonp(result, tips, res);
+        });
+
+    }, 'gbk').on('error', function (e) {
+        tips = "var jsonp='网络慢'";
+        result = false;
+        writeJsonp(result, tips, res);
+    });
+
+
+
+
+};
 
 function write(result, tips, res) {
     var json = new Object();
     json.result = result;
     json.tips = tips;
     res.end("" + JSON.stringify(json));
+
+
+
+}
+function writeJsonp(result, tips, res) {
+    var json = new Object();
+    json.result = result;
+    json.tips = tips;
+    res.writeHead(200, {"Content-Type": "text/html;charset:utf-8"});
+    res.end("" + json.tips);
 
 
 
